@@ -20,11 +20,10 @@ class PreloadScene extends Phaser.Scene {
         this.createGridBgTexture();
         this.createGameBgTexture();
         this.createHeartTexture();
+        this.createParticleTexture();
 
-        // Start the main game scenes
-        this.scene.start('GameScene');
-        this.scene.start('UIScene');
-        this.scene.stop();
+        // Start the main menu
+        this.scene.start('MainMenuScene');
     }
 
     createBlockTextures() {
@@ -134,6 +133,15 @@ class PreloadScene extends Phaser.Scene {
         graphics.fillPath();
         
         graphics.generateTexture('icon_heart', size, size);
+        graphics.destroy();
+    }
+    
+    createParticleTexture() {
+        const size = 16;
+        const graphics = this.add.graphics();
+        graphics.fillStyle(0xffffff);
+        graphics.fillCircle(size / 2, size / 2, size / 2);
+        graphics.generateTexture('particle', size, size);
         graphics.destroy();
     }
 }

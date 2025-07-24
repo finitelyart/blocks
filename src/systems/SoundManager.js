@@ -53,6 +53,12 @@ class SoundManager {
             case 'click':
                 this.playClickSound(time, options);
                 break;
+            case 'pickup':
+                this.playPickupSound(time, options);
+                break;
+            case 'invalid_place':
+                this.playInvalidPlaceSound(time, options);
+                break;
         }
     }
 
@@ -169,6 +175,27 @@ class SoundManager {
         gain.connect(this.audioContext.destination);
         osc.start(time);
         osc.stop(time + 0.1);
+    }
+
+    playPickupSound(time) {
+        const osc = this._createOscillator('sine', 800, time);
+        const gain = this._createGain(0.2, time);
+        osc.frequency.exponentialRampToValueAtTime(1200, time + 0.1);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.1);
+        osc.connect(gain);
+        gain.connect(this.audioContext.destination);
+        osc.start(time);
+        osc.stop(time + 0.1);
+    }
+
+    playInvalidPlaceSound(time) {
+        const osc = this._createOscillator('square', 150, time);
+        const gain = this._createGain(0.2, time);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.2);
+        osc.connect(gain);
+        gain.connect(this.audioContext.destination);
+        osc.start(time);
+        osc.stop(time + 0.2);
     }
 }
 

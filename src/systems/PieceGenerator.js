@@ -39,13 +39,19 @@ const PIECE_DEFINITIONS = {
 
 class PieceGenerator {
     constructor() {
+        this.pieces = {};
         this.weightedPieces = [];
         for (const key in PIECE_DEFINITIONS) {
             const piece = { ...PIECE_DEFINITIONS[key], key };
+            this.pieces[key] = piece;
             for (let i = 0; i < piece.weight; i++) {
                 this.weightedPieces.push(piece);
             }
         }
+    }
+
+    getPieceByKey(key) {
+        return this.pieces[key];
     }
 
     _isValidPlacement(grid, pieceMatrix, targetGridX, targetGridY) {

@@ -141,6 +141,7 @@ import Phaser from 'phaser';
 
 // Import scenes
 import PreloadScene from './src/scenes/PreloadScene.js';
+import MainMenuScene from './src/scenes/MainMenuScene.js';
 import GameScene from './src/scenes/GameScene.js';
 import UIScene from './src/scenes/UIScene.js';
 import GameOverScene from './src/scenes/GameOverScene.js';
@@ -177,6 +178,7 @@ const config = {
     backgroundColor: '#1a1a1a',
     scene: [
         PreloadScene,
+        MainMenuScene,
         GameScene,
         UIScene,
         GameOverScene
