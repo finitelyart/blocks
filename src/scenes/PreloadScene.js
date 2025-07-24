@@ -96,19 +96,43 @@ class PreloadScene extends Phaser.Scene {
         const size = 32;
         const graphics = this.add.graphics();
         graphics.fillStyle(0xff4757, 1); // A nice red color
-        graphics.beginPath();
+        
         const topY = size * 0.35;
         const bottomY = size;
         const halfX = size / 2;
-        
-        graphics.moveTo(halfX, topY);
-        graphics.bezierCurveTo(halfX * 0.7, 0, 0, 0, 0, topY);
-        graphics.bezierCurveTo(0, size * 0.7, halfX, size * 0.9, halfX, bottomY);
-        graphics.bezierCurveTo(halfX, size * 0.9, size, size * 0.7, size, topY);
-        graphics.bezierCurveTo(size, 0, halfX * 1.3, 0, halfX, topY);
 
+        const path = new Phaser.Curves.Path(halfX, topY);
+
+        // Top-left arc
+        path.cubicBezierTo(
+            new Phaser.Math.Vector2(halfX * 0.7, 0),
+            new Phaser.Math.Vector2(0, 0),
+            new Phaser.Math.Vector2(0, topY)
+        );
+        // Left-side arc to bottom point
+        path.cubicBezierTo(
+            new Phaser.Math.Vector2(0, size * 0.7),
+            new Phaser.Math.Vector2(halfX, size * 0.9),
+            new Phaser.Math.Vector2(halfX, bottomY)
+        );
+        // Right-side arc from bottom point
+        path.cubicBezierTo(
+            new Phaser.Math.Vector2(halfX, size * 0.9),
+            new Phaser.Math.Vector2(size, size * 0.7),
+            new Phaser.Math.Vector2(size, topY)
+        );
+        // Top-right arc
+        path.cubicBezierTo(
+            new Phaser.Math.Vector2(size, 0),
+            new Phaser.Math.Vector2(halfX * 1.3, 0),
+            new Phaser.Math.Vector2(halfX, topY)
+        );
+
+        graphics.beginPath();
+        path.draw(graphics);
         graphics.closePath();
         graphics.fillPath();
+        
         graphics.generateTexture('icon_heart', size, size);
         graphics.destroy();
     }
