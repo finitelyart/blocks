@@ -10,9 +10,9 @@ class Polyomino extends Phaser.GameObjects.Container {
         this.matrix = pieceData.matrix;
         this.color = pieceData.color;
         
-        this.createBlocks();
+        const { width, height } = this.createBlocks();
         
-        this.setSize(this.getBounds().width, this.getBounds().height);
+        this.setSize(width, height);
         this.setInteractive({ draggable: true });
         
         scene.add.existing(this);
@@ -22,16 +22,20 @@ class Polyomino extends Phaser.GameObjects.Container {
         const matrix = this.matrix;
 
         let minX = Infinity, minY = Infinity;
+        let maxX = -Infinity, maxY = -Infinity;
+
         for (let y = 0; y < matrix.length; y++) {
             for (let x = 0; x < matrix[y].length; x++) {
                 if (matrix[y][x] === 1) {
                     minX = Math.min(minX, x);
                     minY = Math.min(minY, y);
+                    maxX = Math.max(maxX, x);
+                    maxY = Math.max(maxY, y);
                 }
             }
         }
         
-        if (minX === Infinity) return; // empty piece
+        if (minX === Infinity) return { width: 0, height: 0 }; // empty piece
 
         for (let y = 0; y < matrix.length; y++) {
             for (let x = 0; x < matrix[y].length; x++) {
@@ -43,6 +47,10 @@ class Polyomino extends Phaser.GameObjects.Container {
                 }
             }
         }
+        
+        const width = (maxX - minX + 1) * CELL_SIZE;
+        const height = (maxY - minY + 1) * CELL_SIZE;
+        return { width, height };
     }
 }
 
