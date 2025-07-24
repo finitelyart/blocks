@@ -42,6 +42,7 @@ class GameScene extends Phaser.Scene {
         this.input.on('dragstart', (pointer, gameObject) => {
             gameObject.setDepth(1);
             this.children.bringToTop(gameObject);
+            this.soundManager.play('pickup');
         });
 
         this.input.on('drag', (pointer, gameObject, dragX, dragY) => {
@@ -157,6 +158,7 @@ class GameScene extends Phaser.Scene {
             }
         } else {
             // Invalid placement, return to original position
+            this.soundManager.play('invalid_place');
             this.tweens.add({
                 targets: piece,
                 x: piece.originalPosition.x,
