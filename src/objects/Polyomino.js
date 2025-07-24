@@ -37,19 +37,25 @@ class Polyomino extends Phaser.GameObjects.Container {
         
         if (minX === Infinity) return { width: 0, height: 0 }; // empty piece
 
+        const width = (maxX - minX + 1) * CELL_SIZE;
+        const height = (maxY - minY + 1) * CELL_SIZE;
+
+        // Calculate the offset to center the shape in the container
+        const offsetX = width / 2;
+        const offsetY = height / 2;
+
         for (let y = 0; y < matrix.length; y++) {
             for (let x = 0; x < matrix[y].length; x++) {
                 if (matrix[y][x] === 1) {
-                    const blockX = (x - minX + 0.5) * CELL_SIZE;
-                    const blockY = (y - minY + 0.5) * CELL_SIZE;
+                    // Position blocks relative to the container's center
+                    const blockX = (x - minX + 0.5) * CELL_SIZE - offsetX;
+                    const blockY = (y - minY + 0.5) * CELL_SIZE - offsetY;
                     const block = this.scene.add.image(blockX, blockY, `block_${this.color}`);
                     this.add(block);
                 }
             }
         }
         
-        const width = (maxX - minX + 1) * CELL_SIZE;
-        const height = (maxY - minY + 1) * CELL_SIZE;
         return { width, height };
     }
 }

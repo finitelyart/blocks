@@ -79,26 +79,45 @@ class GameScene extends Phaser.Scene {
 
     updateGhostPiece(pointer, piece) {
         this.ghostContainer.removeAll(true);
-        const gridX = Math.floor((pointer.x - GRID_OFFSET_X) / CELL_SIZE);
-        const gridY = Math.floor((pointer.y - GRID_OFFSET_Y) / CELL_SIZE);
         
-        const snappedX = GRID_OFFSET_X + gridX * CELL_SIZE;
-        const snappedY = GRID_OFFSET_Y + gridY * CELL_SIZE;
+        // The pointer is at the center of the piece. Find the top-left corner.
+        const pieceTopLeftX = pointer.x - piece.width / 2;
+        const pieceTopLeftY = pointer.y - piece.height / 2;
+
+        // Calculate grid cell to snap to. Using Math.round feels more natural.
+        const gridX = Math.round((pieceTopLeftX - GRID_OFFSET_X) / CELL_SIZE);
+        const gridY = Math.round((pieceTopLeftY - GRID_OFFSET_Y) / CELL_SIZE);
+        
+        // Find the top-left world position for the snapped piece
+        const snappedWorldX = GRID_OFFSET_X + gridX * CELL_SIZE;
+        const snappedWorldY = GRID_OFFSET_Y + gridY * CELL_SIZE;
 
         const isValid = this.isValidPlacement(piece.matrix, gridX, gridY);
 
-        for(let block of piece.list) {
-            const ghostBlock = this.add.image(block.x, block.y, block.texture.key)
-                .setOrigin(0,0)
-                .setTint(isValid ? 0x00ff00 : 0xff0000);
-            this.ghostContainer.add(ghostBlock);
+        // Render ghost piece from its matrix data, which is more robust
+        const matrix = piece.matrix;
+        for (let y = 0; y < matrix.length; y++) {
+            for (let x = 0; x < matrix[y].length; x++) {
+                if (matrix[y][x] === 1) {
+                    const ghostBlockX = snappedWorldX + x * CELL_SIZE;
+                    const ghostBlockY = snappedWorldY + y * CELL_SIZE;
+                    const ghostBlock = this.add.image(ghostBlockX, ghostBlockY, `block_${piece.color}`)
+                        .setOrigin(0, 0)
+                        .setTint(isValid ? 0x00ff00 : 0xff0000);
+                    this.ghostContainer.add(ghostBlock);
+                }
+            }
         }
-        this.ghostContainer.setPosition(snappedX, snappedY);
     }
     
     placePiece(pointer, piece) {
-        const gridX = Math.floor((pointer.x - GRID_OFFSET_X) / CELL_SIZE);
-        const gridY = Math.floor((pointer.y - GRID_OFFSET_Y) / CELL_SIZE);
+        // The pointer is at the center of the piece. Find the top-left corner.
+        const pieceTopLeftX = pointer.x - piece.width / 2;
+        const pieceTopLeftY = pointer.y - piece.height / 2;
+
+        // Calculate grid cell to snap to. Must match ghost piece logic.
+        const gridX = Math.round((pieceTopLeftX - GRID_OFFSET_X) / CELL_SIZE);
+        const gridY = Math.round((pieceTopLeftY - GRID_OFFSET_Y) / CELL_SIZE);
 
         if (this.isValidPlacement(piece.matrix, gridX, gridY)) {
             this.commitPieceToGrid(piece, gridX, gridY);
