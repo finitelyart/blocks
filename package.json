@@ -1,5 +1,5 @@
 {
-  "name": "vite-pwa-starter",
+  "name": "block-blast-clone",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,8 +8,10 @@
     "build": "vite build",
     "preview": "vite preview"
   },
+  "dependencies": {
+    "phaser": "^3.80.1"
+  },
   "devDependencies": {
-    "vite": "^5.3.1",
-    "vite-plugin-pwa": "^0.20.0"
+    "vite": "^5.3.1"
   }
 }

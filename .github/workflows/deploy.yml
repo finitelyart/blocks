@@ -38,7 +38,7 @@ jobs:
         run: npm run build
         env:
           # This sets the base URL automatically from the repo name
-          VITE_BASE_URL: /${{ github.repository_name }}/
+          VITE_BASE_URL: /${{ github.event.repository.name }}/
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
