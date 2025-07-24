@@ -205,29 +205,22 @@ class GameScene extends Phaser.Scene {
                     
                     // Placement animation with "squash and stretch"
                     blockSprite.setScale(0);
-                    const timeline = this.tweens.createTimeline({
-                        delay: (y * matrix[y].length + x) * 20
+                    this.tweens.timeline({
+                        delay: (y * matrix[y].length + x) * 20,
+                        tweens: [{
+                            targets: blockSprite,
+                            scaleX: 1.2,
+                            scaleY: 0.8,
+                            duration: 150,
+                            ease: 'Power2'
+                        }, {
+                            targets: blockSprite,
+                            scaleX: 1,
+                            scaleY: 1,
+                            duration: 250,
+                            ease: 'Elastic.easeOut' // Bounces back into place
+                        }]
                     });
-
-                    // Grow into a squashed state
-                    timeline.add({
-                        targets: blockSprite,
-                        scaleX: 1.2,
-                        scaleY: 0.8,
-                        duration: 150,
-                        ease: 'Power2'
-                    });
-
-                    // Settle back to normal size with a bounce
-                    timeline.add({
-                        targets: blockSprite,
-                        scaleX: 1,
-                        scaleY: 1,
-                        duration: 250,
-                        ease: 'Elastic.easeOut'
-                    });
-                    
-                    timeline.play();
                 }
             }
         }
