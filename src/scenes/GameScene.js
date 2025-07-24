@@ -205,21 +205,28 @@ class GameScene extends Phaser.Scene {
                     
                     // Placement animation with "squash and stretch"
                     blockSprite.setScale(0);
-                    this.tweens.timeline({
+
+                    // Manually chain tweens to ensure compatibility with all Phaser 3 versions.
+                    // The 'timeline' feature is not available in your project's current version.
+                    this.tweens.add({
+                        targets: blockSprite,
+                        scaleX: 1.2,
+                        scaleY: 0.8,
+                        duration: 150,
+                        ease: 'Power2',
                         delay: (y * matrix[y].length + x) * 20,
-                        tweens: [{
-                            targets: blockSprite,
-                            scaleX: 1.2,
-                            scaleY: 0.8,
-                            duration: 150,
-                            ease: 'Power2'
-                        }, {
-                            targets: blockSprite,
-                            scaleX: 1,
-                            scaleY: 1,
-                            duration: 250,
-                            ease: 'Elastic.easeOut' // Bounces back into place
-                        }]
+                        onComplete: () => {
+                            // Check if the game object still exists before starting the next tween.
+                            if (blockSprite && blockSprite.active) {
+                                this.tweens.add({
+                                    targets: blockSprite,
+                                    scaleX: 1,
+                                    scaleY: 1,
+                                    duration: 250,
+                                    ease: 'Elastic.easeOut'
+                                });
+                            }
+                        }
                     });
                 }
             }
