@@ -1,22 +1,37 @@
 class SoundManager {
     constructor(scene) {
         this.scene = scene;
+        this.audioContext = null;
+        this.soundQueue = [];
+        this.soundsEnabled = true;
+
         // Handle audio context unlocking, which is required by modern browsers.
-        if (scene.sound.context.state === 'suspended') {
-            scene.sound.once('unlocked', () => {
-                this.audioContext = scene.sound.context;
+        // Sounds will be queued until the context is unlocked by a user gesture.
+        const soundManager = this.scene.sound;
+        if (soundManager.context.state === 'suspended') {
+            soundManager.once('unlocked', () => {
+                this.audioContext = soundManager.context;
+                this._playQueuedSounds();
             });
         } else {
-            this.audioContext = scene.sound.context;
+            this.audioContext = soundManager.context;
         }
-        this.soundsEnabled = true;
     }
 
     play(soundType, options = {}) {
-        if (!this.soundsEnabled || !this.audioContext) return;
+        if (!this.soundsEnabled) return;
+
+        // If context is not ready, queue the sound. It will be played once unlocked.
+        if (!this.audioContext) {
+            this.soundQueue.push({ soundType, options });
+            return;
+        }
 
         const time = this.audioContext.currentTime;
+        this._playSound(soundType, time, options);
+    }
 
+    _playSound(soundType, time, options = {}) {
         switch(soundType) {
             case 'place':
                 this.playPlaceSound(time, options);
@@ -33,6 +48,13 @@ class SoundManager {
             case 'click':
                 this.playClickSound(time, options);
                 break;
+        }
+    }
+
+    _playQueuedSounds() {
+        while(this.soundQueue.length > 0) {
+            const { soundType, options } = this.soundQueue.shift();
+            this.play(soundType, options); // This will now go through the non-queued path
         }
     }
 
