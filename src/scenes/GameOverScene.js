@@ -1,11 +1,14 @@
 import Phaser from 'phaser';
+import SoundManager from '../systems/SoundManager.js';
 
 class GameOverScene extends Phaser.Scene {
     constructor() {
         super('GameOverScene');
+        this.soundManager = null;
     }
 
     create(data) {
+        this.soundManager = new SoundManager(this);
         this.cameras.main.setBackgroundColor('rgba(0, 0, 0, 0.5)');
 
         const centerX = this.cameras.main.width / 2;
@@ -70,7 +73,7 @@ class GameOverScene extends Phaser.Scene {
         restartButtonContainer.setInteractive({ useHandCursor: true });
 
         restartButtonContainer.on('pointerdown', () => {
-            // this.sound.play('sfx_click');
+            this.soundManager.play('click');
             this.scene.get('GameScene').scene.restart();
             this.scene.get('UIScene').scene.restart();
             this.scene.stop();
@@ -84,7 +87,17 @@ class GameOverScene extends Phaser.Scene {
             buttonBg.clear().fillStyle(buttonBgColor).fillRoundedRect(-buttonWidth / 2, -buttonHeight / 2, buttonWidth, buttonHeight, borderRadius);
         });
         
-        // this.sound.play('sfx_game_over');
+        // Animate the whole container
+        container.setScale(0);
+        this.tweens.add({
+            targets: container,
+            scale: 1,
+            ease: 'Elastic.easeOut',
+            duration: 800,
+            delay: 200
+        });
+
+        this.soundManager.play('game_over');
     }
 }
 

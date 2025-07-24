@@ -29,15 +29,15 @@ class PreloadScene extends Phaser.Scene {
 
     createBlockTextures() {
         const colors = {
-            blue: 0x007bff,
-            green: 0x28a745,
-            red: 0xdc3545,
-            yellow: 0xffc107,
-            purple: 0x6f42c1,
-            cyan: 0x17a2b8,
-            magenta: 0xe83e8c,
-            orange: 0xfd7e14,
-            pink: 0xff69b4,
+            blue: 0x007aff,    // A brighter blue
+            green: 0x34c759,   // A vibrant green
+            red: 0xff3b30,     // A sharp red
+            yellow: 0xffcc00,  // A sunny yellow
+            purple: 0xaf52de, // A nice purple
+            cyan: 0x5ac8fa,    // A light, airy cyan/teal
+            magenta: 0xff2d55, // More of a hot pink
+            orange: 0xff9500,  // A rich orange
+            pink: 0xf783ac,    // A softer pink
         };
         const size = 64;
         const graphics = this.add.graphics();

@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import Polyomino from '../objects/Polyomino.js';
 import PieceGenerator from '../systems/PieceGenerator.js';
 import ScoringSystem from '../systems/ScoringSystem.js';
+import SoundManager from '../systems/SoundManager.js';
 
 const CELL_SIZE = 64;
 const GRID_WIDTH = 8;
@@ -21,9 +22,11 @@ class GameScene extends Phaser.Scene {
         this.pieceGenerator = new PieceGenerator();
         this.scoringSystem = new ScoringSystem(this.events);
         this.piecesPlacedThisTurn = 0;
+        this.soundManager = null;
     }
     
     create() {
+        this.soundManager = new SoundManager(this);
         this.add.image(this.cameras.main.width / 2, this.cameras.main.height / 2, 'game_bg').setOrigin(0.5).setAlpha(0.5);
         this.add.image(GRID_OFFSET_X, GRID_OFFSET_Y, 'grid_bg').setOrigin(0);
 
@@ -69,6 +72,17 @@ class GameScene extends Phaser.Scene {
             const pos = queuePositions[index];
             const polyomino = new Polyomino(this, pos.x, pos.y, pieceData);
             polyomino.originalPosition = { x: pos.x, y: pos.y };
+
+            // Spawn animation
+            polyomino.setScale(0);
+            this.tweens.add({
+                targets: polyomino,
+                scale: 1,
+                duration: 300,
+                ease: 'Back.easeOut', // A nice bouncy effect
+                delay: index * 100
+            });
+
             return polyomino;
         });
 
@@ -121,7 +135,7 @@ class GameScene extends Phaser.Scene {
 
         if (this.isValidPlacement(piece.matrix, gridX, gridY)) {
             this.commitPieceToGrid(piece, gridX, gridY);
-            // this.sound.play('sfx_place');
+            this.soundManager.play('place');
             this.currentPieces = this.currentPieces.filter(p => p !== piece);
             piece.destroy();
             
@@ -175,12 +189,24 @@ class GameScene extends Phaser.Scene {
                     const finalX = gridX + x;
                     const finalY = gridY + y;
                     this.grid[finalY][finalX] = 1; // Or a color index
+                    
                     const blockSprite = this.add.image(
-                        GRID_OFFSET_X + finalX * CELL_SIZE,
-                        GRID_OFFSET_Y + finalY * CELL_SIZE,
+                        GRID_OFFSET_X + (finalX + 0.5) * CELL_SIZE,
+                        GRID_OFFSET_Y + (finalY + 0.5) * CELL_SIZE,
                         `block_${piece.color}`
-                    ).setOrigin(0);
+                    ).setOrigin(0.5);
+
                     this.gridSprites[finalY][finalX] = blockSprite;
+                    
+                    // Placement animation
+                    blockSprite.setScale(0);
+                    this.tweens.add({
+                        targets: blockSprite,
+                        scale: 1,
+                        duration: 250,
+                        ease: 'Back.easeOut',
+                        delay: (y * matrix[y].length + x) * 20
+                    });
                 }
             }
         }
@@ -210,7 +236,7 @@ class GameScene extends Phaser.Scene {
 
         const totalLines = rowsToClear.length + colsToClear.length;
         if (totalLines > 0) {
-            // this.sound.play(totalLines > 1 ? 'sfx_clear_combo' : 'sfx_clear_line');
+            this.soundManager.play(totalLines > 1 ? 'clear_combo' : 'clear_line');
         }
 
         rowsToClear.forEach(y => this.clearRow(y));
@@ -240,12 +266,24 @@ class GameScene extends Phaser.Scene {
     }
 
     blastAnimation(sprite) {
+        // Flash effect
         this.tweens.add({
             targets: sprite,
-            scale: 0,
-            duration: 200,
-            ease: 'Power2',
-            onComplete: () => sprite.destroy()
+            alpha: 0,
+            duration: 100,
+            ease: 'Cubic.easeIn',
+            yoyo: true,
+            onComplete: () => {
+                // Main blast animation
+                this.tweens.add({
+                    targets: sprite,
+                    scale: 0,
+                    angle: Phaser.Math.Between(-90, 90), // Add a little spin
+                    duration: 300,
+                    ease: 'Power2',
+                    onComplete: () => sprite.destroy()
+                });
+            }
         });
     }
 
