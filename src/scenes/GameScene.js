@@ -56,10 +56,13 @@ class GameScene extends Phaser.Scene {
     generateNewPieceSet() {
         const pieceDataArray = this.pieceGenerator.generateNewPieces(this.grid);
         
+        // Position the piece queue near the bottom of the screen.
+        const queueY = this.cameras.main.height - 180;
+
         const queuePositions = [
-            { x: 120, y: 780 },
-            { x: 320, y: 780 },
-            { x: 520, y: 780 },
+            { x: 120, y: queueY },
+            { x: 320, y: queueY },
+            { x: 520, y: queueY },
         ];
 
         this.currentPieces = pieceDataArray.map((pieceData, index) => {

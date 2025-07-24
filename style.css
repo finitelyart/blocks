@@ -1,7 +1,8 @@
 body {
   margin: 0;
   padding: 0;
-  background: #000;
+  /* Match the game's background color to make letterboxing less jarring on wide screens. */
+  background: #1a1a1a;
   color: #fff;
   display: flex;
   justify-content: center;

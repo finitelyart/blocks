@@ -145,11 +145,34 @@ import GameScene from './src/scenes/GameScene.js';
 import UIScene from './src/scenes/UIScene.js';
 import GameOverScene from './src/scenes/GameOverScene.js';
 
+// --- Smart Scaling ---
+// We want to fit the game to the screen without black bars.
+// The base size is 640x960.
+// On screens that are "taller" than this aspect ratio (e.g. most modern phones),
+// we will expand the game's height to match the screen's aspect ratio.
+// This keeps all game elements pixel-perfect and avoids distortion.
+
+const BASE_WIDTH = 640;
+const BASE_HEIGHT = 960;
+const screenWidth = window.innerWidth;
+const screenHeight = window.innerHeight;
+
+const screenRatio = screenWidth / screenHeight;
+const gameRatio = BASE_WIDTH / BASE_HEIGHT;
+
+let gameWidth = BASE_WIDTH;
+let gameHeight = BASE_HEIGHT;
+
+// If screen is taller than the game's base aspect ratio, expand game height
+if (screenRatio < gameRatio) {
+    gameHeight = gameWidth / screenRatio;
+}
+
 // Game configuration
 const config = {
     type: Phaser.AUTO,
-    width: 640,
-    height: 960,
+    width: gameWidth,
+    height: gameHeight,
     parent: 'app',
     backgroundColor: '#1a1a1a',
     scene: [
