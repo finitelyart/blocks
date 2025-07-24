@@ -203,15 +203,31 @@ class GameScene extends Phaser.Scene {
 
                     this.gridSprites[finalY][finalX] = blockSprite;
                     
-                    // Placement animation
+                    // Placement animation with "squash and stretch"
                     blockSprite.setScale(0);
-                    this.tweens.add({
-                        targets: blockSprite,
-                        scale: 1,
-                        duration: 250,
-                        ease: 'Back.easeOut',
+                    const timeline = this.tweens.createTimeline({
                         delay: (y * matrix[y].length + x) * 20
                     });
+
+                    // Grow into a squashed state
+                    timeline.add({
+                        targets: blockSprite,
+                        scaleX: 1.2,
+                        scaleY: 0.8,
+                        duration: 150,
+                        ease: 'Power2'
+                    });
+
+                    // Settle back to normal size with a bounce
+                    timeline.add({
+                        targets: blockSprite,
+                        scaleX: 1,
+                        scaleY: 1,
+                        duration: 250,
+                        ease: 'Elastic.easeOut'
+                    });
+                    
+                    timeline.play();
                 }
             }
         }
@@ -242,6 +258,10 @@ class GameScene extends Phaser.Scene {
         const totalLines = rowsToClear.length + colsToClear.length;
         if (totalLines > 0) {
             this.soundManager.play(totalLines > 1 ? 'clear_combo' : 'clear_line');
+            
+            // Shake the camera for impact
+            const intensity = 0.004 + (totalLines * 0.001);
+            this.cameras.main.shake(150, intensity);
         }
 
         rowsToClear.forEach(y => this.clearRow(y));

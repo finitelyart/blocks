@@ -38,6 +38,28 @@ class UIScene extends Phaser.Scene {
         });
 
         this.initUI(gameScene.scoringSystem);
+
+        // Mute Button
+        const soundManager = gameScene.soundManager;
+        const muteButton = this.add.text(
+            this.cameras.main.width - 20, 
+            this.cameras.main.height - 20, 
+            'Mute', 
+            { fontSize: '20px', fontFamily: 'Arial', color: '#ffffff', backgroundColor: '#00000080', padding: { x: 10, y: 5 }, align: 'center' }
+        )
+        .setOrigin(1, 1) // Align to bottom-right
+        .setInteractive({ useHandCursor: true });
+        
+        muteButton.on('pointerdown', () => {
+            const isEnabled = soundManager.toggleMute();
+            muteButton.setText(isEnabled ? 'Mute' : 'Unmute');
+            muteButton.setAlpha(isEnabled ? 1.0 : 0.6);
+            
+            // Play a click sound to confirm enabling sound
+            if (isEnabled) {
+                soundManager.play('click');
+            }
+        });
     }
     
     initUI(scoringSystem) {

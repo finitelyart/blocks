@@ -18,6 +18,11 @@ class SoundManager {
         }
     }
 
+    toggleMute() {
+        this.soundsEnabled = !this.soundsEnabled;
+        return this.soundsEnabled;
+    }
+
     play(soundType, options = {}) {
         if (!this.soundsEnabled) return;
 
@@ -73,10 +78,13 @@ class SoundManager {
     
     // A more impactful sound for placing a piece
     playPlaceSound(time) {
-        const osc = this._createOscillator('square', 200, time);
+        // Randomize pitch slightly to avoid monotony
+        const randomPitch = 200 + (Math.random() - 0.5) * 40; // Varies between 180 and 220
+
+        const osc = this._createOscillator('square', randomPitch, time);
         const gain = this._createGain(0.4, time); // A bit louder
 
-        osc.frequency.exponentialRampToValueAtTime(100, time + 0.1);
+        osc.frequency.exponentialRampToValueAtTime(randomPitch / 2, time + 0.1);
         gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.15);
 
         osc.connect(gain);
