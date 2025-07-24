@@ -50,25 +50,41 @@ class GameOverScene extends Phaser.Scene {
             }).setOrigin(0.5));
         }
 
-        const restartButton = this.add.image(0, 100, 'button_restart').setInteractive({ useHandCursor: true });
-        container.add(restartButton);
+        const restartButtonContainer = this.add.container(0, 100);
+        container.add(restartButtonContainer);
 
-        restartButton.on('pointerdown', () => {
-            this.sound.play('sfx_click');
+        const buttonWidth = 200;
+        const buttonHeight = 60;
+        const borderRadius = 16;
+        const buttonBgColor = 0x007bff;
+        const buttonHoverColor = 0x0056b3;
+
+        const buttonBg = this.add.graphics()
+            .fillStyle(buttonBgColor)
+            .fillRoundedRect(-buttonWidth / 2, -buttonHeight / 2, buttonWidth, buttonHeight, borderRadius);
+
+        const buttonText = this.add.text(0, 0, 'Restart', { fontSize: '28px', fontFamily: 'Arial', color: '#ffffff' }).setOrigin(0.5);
+
+        restartButtonContainer.add([buttonBg, buttonText]);
+        restartButtonContainer.setSize(buttonWidth, buttonHeight);
+        restartButtonContainer.setInteractive({ useHandCursor: true });
+
+        restartButtonContainer.on('pointerdown', () => {
+            // this.sound.play('sfx_click');
             this.scene.get('GameScene').scene.restart();
             this.scene.get('UIScene').scene.restart();
             this.scene.stop();
         });
 
-        restartButton.on('pointerover', () => {
-            restartButton.setTexture('button_restart_hover');
+        restartButtonContainer.on('pointerover', () => {
+            buttonBg.clear().fillStyle(buttonHoverColor).fillRoundedRect(-buttonWidth / 2, -buttonHeight / 2, buttonWidth, buttonHeight, borderRadius);
         });
 
-        restartButton.on('pointerout', () => {
-            restartButton.setTexture('button_restart');
+        restartButtonContainer.on('pointerout', () => {
+            buttonBg.clear().fillStyle(buttonBgColor).fillRoundedRect(-buttonWidth / 2, -buttonHeight / 2, buttonWidth, buttonHeight, borderRadius);
         });
         
-        this.sound.play('sfx_game_over');
+        // this.sound.play('sfx_game_over');
     }
 }
 

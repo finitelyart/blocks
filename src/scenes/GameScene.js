@@ -99,7 +99,7 @@ class GameScene extends Phaser.Scene {
 
         if (this.isValidPlacement(piece.matrix, gridX, gridY)) {
             this.commitPieceToGrid(piece, gridX, gridY);
-            this.sound.play('sfx_place');
+            // this.sound.play('sfx_place');
             this.currentPieces = this.currentPieces.filter(p => p !== piece);
             piece.destroy();
             
@@ -188,7 +188,7 @@ class GameScene extends Phaser.Scene {
 
         const totalLines = rowsToClear.length + colsToClear.length;
         if (totalLines > 0) {
-            this.sound.play(totalLines > 1 ? 'sfx_clear_combo' : 'sfx_clear_line');
+            // this.sound.play(totalLines > 1 ? 'sfx_clear_combo' : 'sfx_clear_line');
         }
 
         rowsToClear.forEach(y => this.clearRow(y));
