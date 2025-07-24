@@ -7,7 +7,7 @@ const CELL_SIZE = 64;
 const GRID_WIDTH = 8;
 const GRID_HEIGHT = 8;
 const GRID_OFFSET_X = 64;
-const GRID_OFFSET_Y = 180;
+const GRID_OFFSET_Y = 120;
 
 class GameScene extends Phaser.Scene {
     constructor() {
@@ -57,9 +57,9 @@ class GameScene extends Phaser.Scene {
         const pieceDataArray = this.pieceGenerator.generateNewPieces(this.grid);
         
         const queuePositions = [
-            { x: 120, y: 800 },
-            { x: 320, y: 800 },
-            { x: 520, y: 800 },
+            { x: 120, y: 780 },
+            { x: 320, y: 780 },
+            { x: 520, y: 780 },
         ];
 
         this.currentPieces = pieceDataArray.map((pieceData, index) => {

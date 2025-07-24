@@ -20,13 +20,25 @@ class Polyomino extends Phaser.GameObjects.Container {
 
     createBlocks() {
         const matrix = this.matrix;
+
+        let minX = Infinity, minY = Infinity;
         for (let y = 0; y < matrix.length; y++) {
             for (let x = 0; x < matrix[y].length; x++) {
                 if (matrix[y][x] === 1) {
-                    const blockX = x * CELL_SIZE;
-                    const blockY = y * CELL_SIZE;
+                    minX = Math.min(minX, x);
+                    minY = Math.min(minY, y);
+                }
+            }
+        }
+        
+        if (minX === Infinity) return; // empty piece
+
+        for (let y = 0; y < matrix.length; y++) {
+            for (let x = 0; x < matrix[y].length; x++) {
+                if (matrix[y][x] === 1) {
+                    const blockX = (x - minX + 0.5) * CELL_SIZE;
+                    const blockY = (y - minY + 0.5) * CELL_SIZE;
                     const block = this.scene.add.image(blockX, blockY, `block_${this.color}`);
-                    block.setOrigin(0, 0);
                     this.add(block);
                 }
             }
