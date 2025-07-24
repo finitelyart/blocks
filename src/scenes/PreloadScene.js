@@ -102,10 +102,10 @@ class PreloadScene extends Phaser.Scene {
         const halfX = size / 2;
         
         graphics.moveTo(halfX, topY);
-        graphics.bezierCurveTo(halfX * 0.7, 0, 0, 0, 0, topY);
-        graphics.bezierCurveTo(0, size * 0.7, halfX, size * 0.9, halfX, bottomY);
-        graphics.bezierCurveTo(halfX, size * 0.9, size, size * 0.7, size, topY);
-        graphics.bezierCurveTo(size, 0, halfX * 1.3, 0, halfX, topY);
+        graphics.cubicBezierTo(halfX * 0.7, 0, 0, 0, 0, topY);
+        graphics.cubicBezierTo(0, size * 0.7, halfX, size * 0.9, halfX, bottomY);
+        graphics.cubicBezierTo(halfX, size * 0.9, size, size * 0.7, size, topY);
+        graphics.cubicBezierTo(size, 0, halfX * 1.3, 0, halfX, topY);
 
         graphics.closePath();
         graphics.fillPath();
