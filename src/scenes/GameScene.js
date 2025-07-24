@@ -149,6 +149,11 @@ class GameScene extends Phaser.Scene {
 
             if (this.currentPieces.length === 0) {
                 this.generateNewPieceSet();
+            } else {
+                // After placing a piece, check if any of the remaining pieces can be placed.
+                if (this.isGameOver()) {
+                    this.handleGameOver();
+                }
             }
         } else {
             // Invalid placement, return to original position
